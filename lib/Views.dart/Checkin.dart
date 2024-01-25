@@ -1,5 +1,6 @@
 // ignore_for_file: prefer_const_constructors, use_key_in_widget_constructors, unnecessary_nullable_for_final_variable_declarations, library_private_types_in_public_api
 
+import 'dart:convert';
 import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
@@ -83,11 +84,36 @@ Future<void> sendCheckOutRequest() async {
         SnackBar(
           content: Text('Check-out successful'),
           duration: Duration(seconds: 2),
+          backgroundColor: Colors.green,
         ),
       );
     } else {
       print('Check-out failed with status code: ${response.statusCode}');
       print('Response body: ${response.body}');
+       final Map<String, dynamic> errorData = json.decode(response.body);
+
+        if (errorData.containsKey('errors')) {
+          final errors = errorData['errors'];
+          if (errors is Map<String, dynamic>) {
+            errors.forEach((key, value) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: Text('$value'),
+                  backgroundColor: Colors.red,
+                ),
+              );
+            });
+          }
+        } else {
+          final Map<String, dynamic> errorData = json.decode(response.body);
+
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text('${errorData['message']}'),
+              backgroundColor: Colors.red,
+            ),
+          );
+        }
     }
   } catch (error) {
     print('Error during check-out request: $error');
@@ -113,11 +139,36 @@ Future<void> sendCheckInRequest() async {
         SnackBar(
           content: Text('Check-in successful'),
           duration: Duration(seconds: 2),
+          backgroundColor: Colors.green,
         ),
       );
     } else {
       print('Check-in failed with status code: ${response.statusCode}');
       print('Response body: ${response.body}');
+       final Map<String, dynamic> errorData = json.decode(response.body);
+
+        if (errorData.containsKey('errors')) {
+          final errors = errorData['errors'];
+          if (errors is Map<String, dynamic>) {
+            errors.forEach((key, value) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: Text('$value'),
+                  backgroundColor: Colors.red,
+                ),
+              );
+            });
+          }
+        } else {
+          final Map<String, dynamic> errorData = json.decode(response.body);
+
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text('${errorData['message']}'),
+              backgroundColor: Colors.red,
+            ),
+          );
+        }
     }
   } catch (error) {
     print('Error during check-in request: $error');
